@@ -1,0 +1,345 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartBin | Dashboard</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div class="app-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+<a class="brand" href="/dashboard">♻ SmartBin</a>
+<p class="side-label">MAIN MENU</p>
+
+      <a class="nav-link active" href="/dashboard">
+        ▦ Dashboard
+      </a>
+
+      <a class="nav-link" href="/customer">
+        ♙ Customers & Donations
+      </a>
+
+      <a class="nav-link" href="/ai-scanner">
+        ⌕ AI Waste Scanner
+      </a>
+
+      <div class="sidebar-bottom">
+        <p>Smart Waste Management</p>
+        <small>A cleaner future starts here.</small>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+      <!-- HEADER -->
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">OVERVIEW</p>
+          <h1>Waste Management Dashboard</h1>
+          <p class="muted">
+            Monitor your bins and track community recycling.
+          </p>
+        </div>
+
+        <a class="primary-btn" href="/customer">
+          + Record Donation
+        </a>
+      </header>
+
+      <!-- STATISTICS -->
+      <section class="stats-grid">
+
+        <article class="stat-card">
+          <span class="stat-icon green">♻</span>
+          <p>Total Bins</p>
+          <h2><%= totalBins %></h2>
+          <small>Registered bins</small>
+        </article>
+
+        <article class="stat-card">
+          <span class="stat-icon orange">!</span>
+          <p>Nearly Full</p>
+          <h2><%= nearlyFullBins %></h2>
+          <small>Bins at 80% or more</small>
+        </article>
+
+        <article class="stat-card">
+          <span class="stat-icon blue">⚖</span>
+          <p>Waste Collected</p>
+          <h2>
+            <%= totalWaste %>
+            <span class="unit">kg</span>
+          </h2>
+          <small>Total recorded donations</small>
+        </article>
+
+        <article class="stat-card">
+          <span class="stat-icon purple">♙</span>
+          <p>Customers</p>
+          <h2><%= totalCustomers %></h2>
+          <small>
+            <%= totalDonations %> donation records
+          </small>
+        </article>
+
+      </section>
+
+      <!-- WASTE BIN MONITORING -->
+      <section class="panel">
+
+        <div class="section-heading">
+          <div>
+            <h2>Waste Bin Monitoring</h2>
+            <p class="muted">
+              Current saved fill-level estimates
+            </p>
+          </div>
+
+          <div class="bin-heading-actions">
+            <span class="count-pill">
+              <%= bins.length %> bins
+            </span>
+
+            <a href="/bins/add" class="primary-btn">
+              + Add New Bin
+            </a>
+          </div>
+        </div>
+
+        <% if (bins.length === 0) { %>
+
+          <div class="empty-state">
+            <div class="bin-symbol">♻</div>
+            <h3>No bins added yet</h3>
+            <p>
+              Add your first bin to start monitoring.
+            </p>
+
+            <a href="/bins/add" class="primary-btn">
+              + Register First Bin
+            </a>
+          </div>
+
+        <% } else { %>
+
+          <div class="bin-grid">
+
+            <% bins.forEach(function(bin) { %>
+
+              <%
+                const level = Math.max(
+                  0,
+                  Math.min(100, Number(bin.fillLevel) || 0)
+                );
+
+                const status =
+                  level >= 100
+                    ? "Full"
+                    : level >= 80
+                    ? "Nearly Full"
+                    : "Normal";
+
+                const statusClass =
+                  level >= 100
+                    ? "status-full"
+                    : level >= 80
+                    ? "status-warning"
+                    : "status-normal";
+              %>
+
+              <article class="bin-card">
+
+                <div class="bin-card-top">
+                  <div class="bin-symbol">♻</div>
+
+                  <span class="status <%= statusClass %>">
+                    <%= status %>
+                  </span>
+                </div>
+
+                <h3>
+                  <%= bin.binId %>
+                </h3>
+
+                <p class="muted">
+                  <%= bin.location %>
+                </p>
+
+                <div class="progress-label">
+                  <span>Fill level</span>
+                  <strong><%= level %>%</strong>
+                </div>
+
+                <div
+                  class="progress-track"
+                  role="progressbar"
+                  aria-valuenow="<%= level %>"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                  aria-label="Bin fill level"
+                >
+                  <div
+                    class="progress-fill <%= level >= 80 ? 'fill-warning' : '' %>"
+                    style="width: <%= level %>%"
+                  ></div>
+                </div>
+
+                <p class="bin-status-text">
+                  <% if (level >= 100) { %>
+                    Bin is full. Collection required.
+                  <% } else if (level >= 80) { %>
+                    Collection recommended soon.
+                  <% } else { %>
+                    Bin capacity is available.
+                  <% } %>
+                </p>
+
+              </article>
+
+            <% }); %>
+
+          </div>
+
+        <% } %>
+
+      </section>
+
+      <!-- RECENT DONATIONS -->
+      <section class="panel">
+
+        <div class="section-heading">
+          <div>
+            <h2>Recent Donations</h2>
+            <p class="muted">
+              Latest community contributions
+            </p>
+          </div>
+
+          <a class="text-link" href="/customer">
+            Manage customers →
+          </a>
+        </div>
+
+        <% if (recentDonations.length === 0) { %>
+
+          <div class="empty-state">
+            <p>
+              No donations recorded yet.
+              Add a customer and record a donation.
+            </p>
+
+            <a class="primary-btn" href="/customer">
+              Record First Donation
+            </a>
+          </div>
+
+        <% } else { %>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th>Waste Type</th>
+                  <th>Weight</th>
+                  <th>Bin</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+
+              <tbody>
+
+                <% recentDonations.forEach(function(donation) { %>
+
+                  <tr>
+                    <td>
+                      <strong>
+                        <%= donation.customer ? donation.customer.name: "Unknown customer" %>
+                      </strong>
+                    </td>
+
+                    <td>
+                      <%= donation.wasteType %>
+                    </td>
+
+                    <td>
+                      <%= donation.weightKg %> kg
+                    </td>
+
+                    <td>
+                      <%= donation.bin
+                        ? donation.bin.binId
+                        : "Not assigned" %>
+                    </td>
+
+                    <td>
+                      <%= donation.createdAt
+                        ? new Date(donation.createdAt).toLocaleDateString("en-IN")
+                        : "N/A" %>
+                    </td>
+                  </tr>
+
+                <% }); %>
+
+              </tbody>
+            </table>
+          </div>
+
+        <% } %>
+
+      </section>
+
+      <!-- QUICK ACTIONS -->
+      <section class="quick-actions">
+
+        <a href="/customer" class="action-card">
+          <span>♙</span>
+
+          <div>
+            <strong>Customer Donations</strong>
+            <p>Register customers and record waste.</p>
+          </div>
+
+          <span>→</span>
+        </a>
+
+        <a href="/ai-scanner" class="action-card">
+          <span>⌕</span>
+
+          <div>
+            <strong>AI Waste Scanner</strong>
+            <p>Upload an image to identify waste.</p>
+          </div>
+
+          <span>→</span>
+        </a>
+
+        <a href="/bins/add" class="action-card">
+          <span>♻</span>
+
+          <div>
+            <strong>Add New Bin</strong>
+            <p>Register a bin and start monitoring.</p>
+          </div>
+
+          <span>→</span>
+        </a>
+
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="footer">
+        <p class="SmartBin">♻ SmartBin · Smart Waste Management System</p>
+        <p class="creator">Created by <span>@Sundar_Roy</span></p>
+      </footer>
+
+    </main>
+  </div>
+</body>
+</html>

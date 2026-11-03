@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SmartBin Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>🌱 SmartBin</h1>
+        <p>Smart Waste Management System</p>
+    </header>
+
+    <main>
+        <h2>Waste Bin Monitoring</h2>
+
+        <div class="bin-container">
+
+            <% bins.forEach(function(bin) { %>
+
+                <div class="bin-card">
+
+                    <h3><%= bin.id %></h3>
+
+                    <p>📍 <%= bin.location %></p>
+
+                    <div class="level">
+                        <div
+                            class="level-fill"
+                            style="width: <%= bin.fillLevel %>%;">
+                        </div>
+                    </div>
+
+                    <h2><%= bin.fillLevel %>%</h2>
+
+                    <p class="status">
+                        Status: <strong><%= bin.status %></strong>
+                    </p>
+
+                </div>
+
+            <% }); %>
+
+        </div>
+    </main>
+
+    <script src="/js/dashboard.js"></script>
+
+</body>
+</html>

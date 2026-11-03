@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartBin | Customers & Donations</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: Arial, sans-serif;
+      background: #f3f7f4;
+      color: #24352b;
+    }
+
+    .container {
+      max-width: 1050px;
+      margin: auto;
+    }
+
+    nav {
+      margin-bottom: 24px;
+    }
+
+    nav a {
+      display: inline-block;
+      margin: 0 18px 10px 0;
+      color: #18794e;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    h1 {
+      color: #18794e;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 22px;
+      border-radius: 12px;
+      box-shadow: 0 3px 12px #0000000d;
+      margin-bottom: 22px;
+    }
+
+    label {
+      display: block;
+      margin: 12px 0 6px;
+    }
+
+    input,
+    select,
+    button {
+      width: 100%;
+      padding: 11px;
+      border: 1px solid #ccd8cf;
+      border-radius: 7px;
+      font-size: 15px;
+    }
+
+    button {
+      margin-top: 16px;
+      background: #18794e;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #105d39;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #e4ebe6;
+      text-align: left;
+    }
+
+    th {
+      background: #edf5ef;
+    }
+
+    .muted {
+      color: #66736a;
+    }
+
+    .notice {
+      padding: 12px;
+      background: #e4f5e9;
+      border-radius: 8px;
+    }
+
+    .empty {
+      text-align: center;
+      color: #66736a;
+      padding: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <nav>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/customer">Customers & Donations</a>
+      <a href="/ai-scanner">AI Scanner</a>
+    </nav>
+
+    <h1>Customer & Waste Donation Management</h1>
+
+    <p class="muted">
+      Customer records and donations are saved in MongoDB.
+    </p>
+
+    <% if (typeof message !== "undefined" && message) { %>
+      <p class="notice"><%= message %></p>
+    <% } %>
+
+    <div class="grid">
+
+      <!-- Register Customer -->
+      <section class="card">
+        <h2>Register Customer</h2>
+
+        <form action="/customer" method="POST">
+          <label for="name">Customer name</label>
+
+          <input
+            id="name"
+            name="name"
+            type="text"
+            required
+            maxlength="100"
+            placeholder="Enter full name"
+          >
+
+          <button type="submit">Register Customer</button>
+        </form>
+
+        <p class="muted">
+          Customer ID will be generated automatically by the system.
+        </p>
+      </section>
+
+      <!-- Record Donation -->
+      <section class="card">
+        <h2>Record Waste Donation</h2>
+
+        <form action="/donations" method="POST">
+
+          <label for="customer">Select customer</label>
+
+          <select id="customer" name="customerId" required>
+            <option value="">Choose a customer</option>
+
+            <% customers.forEach(function(customer) { %>
+              <option value="<%= customer._id %>">
+                <%= customer.name %> — <%= customer.customerId %>
+              </option>
+            <% }); %>
+          </select>
+
+          <label for="bin">Select bin (optional)</label>
+
+          <select id="bin" name="binId">
+            <option value="">No bin selected</option>
+
+            <% bins.forEach(function(bin) { %>
+              <option value="<%= bin._id %>">
+                <%= bin.binId || bin.id %> — <%= bin.location %>
+              </option>
+            <% }); %>
+          </select>
+
+          <label for="wasteType">Waste type</label>
+
+          <select id="wasteType" name="wasteType" required>
+            <option value="Plastic">Plastic</option>
+            <option value="Paper">Paper</option>
+            <option value="Glass">Glass</option>
+            <option value="Metal">Metal</option>
+            <option value="Food">Food</option>
+            <option value="Electronic">Electronic</option>
+            <option value="Mixed">Mixed</option>
+            <option value="Other">Other</option>
+          </select>
+
+          <label for="weightKg">Waste weight (kg)</label>
+
+          <input
+            id="weightKg"
+            name="weightKg"
+            type="number"
+            min="0.01"
+            max="10000"
+            step="0.01"
+            required
+            placeholder="e.g. 2.5"
+          >
+
+          <button type="submit">Save Donation</button>
+        </form>
+      </section>
+
+    </div>
+
+    <!-- Registered Customers -->
+    <section class="card">
+      <h2>Registered Customers</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Customer ID</th>
+              <th>Name</th>
+              <th>Total Waste (kg)</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% if (customers.length === 0) { %>
+              <tr>
+                <td colspan="3" class="empty">
+                  No customers registered yet.
+                </td>
+              </tr>
+            <% } %>
+
+            <% customers.forEach(function(customer) { %>
+              <tr>
+                <td><%= customer.customerId || "Not assigned" %></td>
+                <td><%= customer.name %></td>
+                <td>
+                  <%= Number(customer.totalWaste || 0).toFixed(2) %>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>

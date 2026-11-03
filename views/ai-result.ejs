@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartBin - Scan Result</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0fdf4;
+      padding: 30px;
+      color: #14532d;
+    }
+    .card {
+      max-width: 600px;
+      margin: 30px auto;
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 4px 18px #0001;
+    }
+    .result {
+      padding: 14px;
+      margin: 10px 0;
+      background: #dcfce7;
+      border-radius: 8px;
+    }
+    a { color: #15803d; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>♻️ Waste Scan Result</h1>
+
+    <% const items = predictions || results || []; %>
+
+    <% if (items.length > 0) { %>
+      <% items.forEach(function(item) { %>
+        <div class="result">
+          <strong><%= item.label %></strong>
+          — <%= item.confidence !== undefined
+            ? item.confidence
+            : (Number(item.score || 0) * 100).toFixed(1) %>%
+        </div>
+      <% }); %>
+    <% } else { %>
+      <p>No predictions were received. Please scan again.</p>
+    <% } %>
+
+    <a href="/ai-scanner">← Scan another image</a>
+    <br><br>
+    <a href="/">← Home</a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartBin AI Scanner</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .scanner-box {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 28px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px #0001;
+      text-align: center;
+    }
+    .scanner-box input,
+    .scanner-box button {
+      margin: 12px 0;
+      padding: 12px;
+    }
+    .scanner-box button {
+      background: #198754;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <main class="scanner-box">
+    <h1>🌱 SmartBin AI Scanner</h1>
+    <p>Upload a waste image to begin classification.</p>
+    
+
+    <form action="/ai-scan" method="POST" enctype="multipart/form-data">
+  <input type="file" name="image" accept="image/jpeg,image/png,image/webp" required>
+  <br>
+  <button type="submit">Scan Waste</button>
+</form>
+
+    <p id="result">
+      Supported categories will include plastic, paper,
+      metal, glass, and organic waste.
+    </p>
+
+    <a href="/">Back to Dashboard</a>
+  </main>
+</body>
+</html>

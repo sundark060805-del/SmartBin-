@@ -1,0 +1,33 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Add Waste Bin | SmartBin</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <main class="add-bin-card">
+    <h1>Add Waste Bin</h1>
+
+    <form action="/bins/add" method="POST">
+      <label for="binId">Bin ID</label>
+      <input id="binId" name="binId"
+             placeholder="BIN-004" required>
+
+      <label for="location">Bin Location</label>
+      <input id="location" name="location"
+             placeholder="College Canteen" required>
+
+      <label for="fillLevel">Current Fill Level (%)</label>
+      <input id="fillLevel" name="fillLevel"
+             type="number" min="0" max="100" value="0">
+
+      <button type="submit">Add Bin</button>
+    </form>
+
+    <a href="/dashboard">Back to Dashboard</a>
+  </main>
+</body>
+</html>

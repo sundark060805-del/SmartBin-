@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SmartBin | Smart Waste Management</title>
+  <style>
+    *
+    {
+      box-sizing:border-box;
+      margin:0;padding:0;
+      font-family:Arial,sans-serif
+    }
+    body{
+      background:#f5f9f5;
+      color:#20352a
+    }
+    header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      padding:20px 6%;
+      background:white;flex-wrap:wrap
+    }
+    .brand{
+      font-size:25px;
+      font-weight:bold;
+      color:#168344
+    }
+    .header-right{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap
+    }
+    .status{
+      background:#e7f7ec;
+      color:#168344;
+      padding:10px 14px;
+      border-radius:25px;
+      font-size:13px
+    }
+    button,.btn{
+      padding:12px 17px;
+      border-radius:8px;
+      cursor:pointer;
+      font-size:14px;
+      font-weight:bold;
+      text-decoration:none;
+      border:0;
+      display:inline-block
+    }
+    .login-btn,.secondary{
+      background:white;
+      color:#168344;
+      border:1px solid #168344
+    }
+    .signup-btn,.primary,.submit-btn{
+      background:#168344;
+      color:white
+    }
+    .hero{
+      text-align:center;
+      padding:85px 20px;
+      background:linear-gradient(135deg,#e8f8ec,#f7fbf7)
+    }
+    .tag{
+      display:inline-block;
+      background:white;
+      color:#168344;
+      padding:9px 15px;
+      border-radius:25px;
+      margin-bottom:22px
+    }
+    h1{
+      font-size:clamp(32px,5vw,52px);
+      line-height:1.2;
+      margin-bottom:20px
+    }
+    h1 span{
+      color:#168344
+    }
+    .hero p{
+      max-width:650px;
+      margin:0 auto 28px;
+      line-height:1.7;
+      color:#637166
+    }
+    .hero-buttons{
+      display:flex;
+      justify-content:center;
+      gap:14px;
+      flex-wrap:wrap
+    }
+    .features{
+      padding:60px 6%;
+      text-align:center
+    }
+    .features h2{
+      font-size:30px;
+      margin-bottom:12px
+    }
+    .features-intro{
+      color:#69756d;
+      margin-bottom:35px
+    }
+    .feature-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:22px;max-width:1100px;
+      margin:auto
+    }
+    .feature-card{
+      background:white;
+      padding:28px 22px;
+      border-radius:14px;
+      text-align:left;
+      box-shadow:0 5px 20px #00000008
+    }
+    .feature-icon{
+      font-size:32px;
+      margin-bottom:16px
+    }
+    .feature-card h3{
+      margin-bottom:12px
+    }
+    .feature-card p{
+      color:#68756c;
+      line-height:1.6;
+      font-size:14px
+    }
+    footer{
+      text-align:center;
+      padding:25px;
+      color:#68756c;
+      border-top:1px solid #e4ece5
+    }
+    .modal{
+      display:none;
+      position:fixed;
+      inset:0;
+      z-index:1000;
+      background:#0009;
+      justify-content:center;
+      align-items:center;
+      padding:18px;
+      overflow-y:auto
+    }
+    .modal.show{
+      display:flex
+    }
+    .modal-content{
+      width:100%;
+      max-width:430px;
+      background:white;padding:30px;
+      border-radius:16px;
+      position:relative;
+      margin:auto}
+    .modal-content h2{
+      color:#168344;
+      margin-bottom:10px
+    }
+    .subtitle{
+      color:#69756d;
+      font-size:14px;
+      margin-bottom:22px;
+      line-height:1.5
+    }
+    .close-btn{
+      position:absolute;top:10px;
+      right:12px;
+      background:transparent;
+      color:#555;
+      font-size:25px;
+      padding:4px 8px
+    }
+    .form-group{
+      margin-bottom:15px
+    }
+    .form-group label{
+      display:block;
+      font-size:14px;
+      margin-bottom:7px;
+      font-weight:bold
+    }
+    .form-group input{
+      width:100%;
+      padding:12px;
+      border:1px solid #d5dfd7;
+      border-radius:8px;
+      font-size:15px
+    }
+    .submit-btn{
+      width:100%;
+      margin-top:5px
+    }
+    .switch-text{
+      text-align:center;
+      margin-top:18px;
+      font-size:14px;
+      color:#5c685f
+    }
+    .switch-text button{
+      padding:0;
+      color:#168344;
+      background:none
+    }
+    .message{
+      padding:11px;
+      border-radius:7px;
+      font-size:14px;
+      margin-bottom:15px;
+      line-height:1.5;
+      overflow-wrap:anywhere
+    }
+    .error-message{
+      background:#fff0f0;
+      color:#b42318
+    }
+    .success-message{
+      background:#e7f7ec;
+      color:#126b36
+    }
+    @media(max-width:600px){header{padding:16px 4%}
+    .brand{
+      font-size:22px
+    }
+    .status{
+      font-size:12px;
+      padding:8px
+    }
+    .header-right{
+      gap:6px
+    }
+    .header-right button{
+      padding:9px;
+      font-size:12px
+    }
+    .hero{
+      padding:60px 18px
+    }
+    .modal-content{
+      padding:25px 20px
+    }}
+  </style>
+</head>
+<body data-form-type="<%= typeof formType !== 'undefined' && formType ? formType : '' %>">
+  <header>
+    <div class="brand">🌱 SmartBin</div>
+    <div class="header-right">
+      <div class="status">♻️ Greener Future</div>
+      <button class="login-btn" type="button" onclick="openModal('login')">Login</button>
+      <button class="signup-btn" type="button" onclick="openModal('signup')">Sign Up</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="tag">🌍 Smart Waste Management System</div>
+      <h1>A Cleaner World Starts with <span>SmartBin</span></h1>
+      <p>Make waste management smarter with AI-powered waste classification, real-time bin monitoring, and responsible waste donation.</p>
+      <div class="hero-buttons">
+        <a href="/dashboard" class="btn primary" onclick="return requireLogin(event,'/dashboard')">View Dashboard →</a>
+        <a href="/ai-scanner" class="btn secondary" onclick="return requireLogin(event,'/ai-scanner')">♻️ Scan Waste</a>
+      </div>
+    </section>
+
+    <section class="features">
+      <h2>Smart Features</h2>
+      <p class="features-intro">Technology for a cleaner and more sustainable world.</p>
+      <div class="feature-grid">
+        <article class="feature-card"><div class="feature-icon">🗑️</div>
+          <h3>Bin Monitoring</h3>
+          <p>Monitor bin fill levels and their current status.</p></article>
+        <article class="feature-card"><div class="feature-icon">🤖</div>
+          <h3>AI Waste Scanner</h3>
+          <p>Upload a waste image and classify it using AI.</p></article>
+        <article class="feature-card"><div class="feature-icon">♻️</div>
+          <h3>Waste Donations</h3>
+          <p>Record donations and track customer contributions.</p></article>
+        <article class="feature-card"><div class="feature-icon">📊</div>
+          <h3>Smart Dashboard</h3>
+          <p>View waste statistics and bin information.</p></article>
+      </div>
+    </section>
+  </main>
+
+  <footer>© <%= new Date().getFullYear() %> SmartBin — A Greener Future</footer>
+
+  <div class="modal" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+    <div class="modal-content">
+      <button type="button" class="close-btn" onclick="closeModals()" aria-label="Close">&times;</button>
+      <h2 id="loginTitle">Welcome Back!</h2>
+      <p class="subtitle">Login to continue to SmartBin.</p>
+
+      <% if (typeof error !== 'undefined' && error && formType !== 'signup') { %>
+        <div class="message error-message"><%= error %></div>
+      <% } %>
+      <% if (typeof success !== 'undefined' && success) { %>
+        <div class="message success-message"><%= success %></div>
+      <% } %>
+
+      <form action="/customer/login" method="POST">
+        <div class="form-group"><label for="loginUsername">Username</label><input id="loginUsername" name="username" autocomplete="username" required></div>
+        <div class="form-group"><label for="loginPassword">Password</label><input id="loginPassword" type="password" name="password" autocomplete="current-password" required></div>
+        <button class="submit-btn" type="submit">Login</button>
+      </form>
+      <p class="switch-text">Don't have an account? <button type="button" onclick="openModal('signup')">Sign Up</button></p>
+    </div>
+  </div>
+
+  <div class="modal" id="signupModal" role="dialog" aria-modal="true" aria-labelledby="signupTitle">
+    <div class="modal-content">
+      <button type="button" class="close-btn" onclick="closeModals()" aria-label="Close">&times;</button>
+      <h2 id="signupTitle">Create Account</h2>
+      <p class="subtitle">Register to get your SmartBin Customer ID.</p>
+
+      <% if (typeof error !== 'undefined' && error && formType === 'signup') { %>
+        <div class="message error-message"><%= error %></div>
+      <% } %>
+
+      <form action="/customer/register" method="POST">
+        <div class="form-group"><label for="signupName">Full Name</label><input id="signupName" name="name" autocomplete="name" required></div>
+        <div class="form-group"><label for="signupUsername">Username</label><input id="signupUsername" name="username" autocomplete="username" required></div>
+        <div class="form-group"><label for="signupMobile">Mobile Number</label><input id="signupMobile" type="tel" name="mobile" autocomplete="tel" required></div>
+        <div class="form-group"><label for="signupEmail">Email</label><input id="signupEmail" type="email" name="email" autocomplete="email" required></div>
+        <div class="form-group"><label for="signupPassword">Password (minimum 8 characters)</label><input id="signupPassword" type="password" name="password" autocomplete="new-password" minlength="8" required></div>
+        <button class="submit-btn" type="submit">Create Account</button>
+      </form>
+      <p class="switch-text">Already registered? <button type="button" onclick="openModal('login')">Login</button></p>
+    </div>
+  </div>
+
+  <script>
+    function openModal(type) {
+      closeModals();
+      const modal = document.getElementById(type === 'signup' ? 'signupModal' : 'loginModal');
+      if (modal) {
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeModals() {
+      document.querySelectorAll('.modal').forEach(modal => modal.classList.remove('show'));
+      document.body.style.overflow = '';
+    }
+
+    async function requireLogin(event, destination) {
+      event.preventDefault();
+      try {
+        const response = await fetch('/customer/auth-status');
+        if (!response.ok) throw new Error('Could not check session');
+        const data = await response.json();
+        if (data.loggedIn) {
+          window.location.assign(destination);
+        } else {
+          openModal('login');
+        }
+      } catch (error) {
+        // Server-side route protection remains the fallback.
+        window.location.assign(destination);
+      }
+      return false;
+    }
+
+    document.querySelectorAll('.modal').forEach(modal => {
+      modal.addEventListener('click', event => {
+        if (event.target === modal) closeModals();
+      });
+    });
+
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') closeModals();
+    });
+
+    if (document.body.dataset.formType === 'signup') openModal('signup');
+    if (document.body.dataset.formType === 'login') openModal('login');
+  </script>
+</body>
+</html>

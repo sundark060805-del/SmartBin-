@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartBin Customer Home</title>
+</head>
+<body>
+  <h1>Welcome, <%= customer.name %>!</h1>
+
+  <p>Customer ID: <strong><%= customer.customerId %></strong></p>
+  <p>Username: <%= customer.username %></p>
+  <p>Mobile: <%= customer.mobile %></p>
+  <p>Email: <%= customer.email %></p>
+  <p>Total Waste Donated: <%= customer.totalWaste %> kg</p>
+
+  <form action="/customer/logout" method="POST">
+    <button type="submit">Logout</button>
+  </form>
+</body>
+</html>
